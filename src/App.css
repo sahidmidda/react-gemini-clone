@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Rancho&display=swap');
+
+@keyframes typing {
+    0% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.3;
+    }
+}
+
+.typing-animation {
+    animation: typing 1.5s infinite;
+}
