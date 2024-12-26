@@ -6,7 +6,7 @@ function Header() {
             }}>
                 Phoenix AI
             </h1>
-            <img src="../src/assets/phoenixAiLogo.png" alt="Phoenix Logo" className='w-[40px] h-[40px] rounded-full' />
+            <img src="/phoenixAiLogo.png" alt="Phoenix Logo" className='w-[40px] h-[40px] rounded-full' />
         </header>
     )
 }

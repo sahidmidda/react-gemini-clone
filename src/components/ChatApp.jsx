@@ -119,7 +119,7 @@ const ChatApp = () => {
                             <div key={index} className={`mb-4 flex flex-row gap-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 {
                                     message.sender === 'ai' && (
-                                        <img src="../src/assets/phoenixAiLogo.png" alt="Phoenix Avatar" className='w-[20px] h-[20px] rounded-full border border-1 border-white mt-[4px]' />
+                                        <img src="/phoenixAiLogo.png" alt="Phoenix Avatar" className='w-[20px] h-[20px] rounded-full border border-1 border-white mt-[4px]' />
                                     )
                                 }
                                 <div className={`inline-block p-2 rounded-lg max-w-[80%] text-justify
@@ -148,7 +148,7 @@ const ChatApp = () => {
                                 </div>
                                 {
                                     message.sender === 'user' && (
-                                        <img src="../src/assets/phoenixHumanAvatar.png" alt="Human Avatar" className='w-[20px] h-[20px] rounded-full border border-1 border-white mt-[4px]' />
+                                        <img src="/phoenixHumanAvatar.png" alt="Human Avatar" className='w-[20px] h-[20px] rounded-full border border-1 border-white mt-[4px]' />
                                     )
                                 }
                             </div>
