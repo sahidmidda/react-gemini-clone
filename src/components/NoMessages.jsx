@@ -4,7 +4,7 @@ function NoMessages() {
             <h1 className='text-2xl tracking-normal' style={{
                 fontFamily: "monospace"
             }}>
-                Start your personal chat with Phoenix right away by typing in the below box
+                Start your personalised chat with Phoenix right away by typing in the below box
             </h1>
             <h3 className='text-md tracking-normal' style={{
                 fontFamily: "monospace"

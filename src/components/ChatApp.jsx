@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Send } from 'lucide-react'
+import { Send, Trash2 } from 'lucide-react'
 import ReactMarkdown from "react-markdown";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Header from './Header';
 import NoMessages from "./NoMessages";
 import GeminiTyping from './GeminiTyping';
 import MarkdownCompObj from "./MarkdownCompObj";
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
@@ -36,13 +37,14 @@ const transformToLocalMessagesStructure = (data) => {
 };
 
 const ChatApp = () => {
-    let geminiChatHistory = localStorage.getItem("geminiChatHistory");
-    if (geminiChatHistory) {
-        geminiChatHistory = JSON.parse(geminiChatHistory);
+    let phoenixChatHistory = localStorage.getItem("phoenixChatHistory");
+    if (phoenixChatHistory) {
+        phoenixChatHistory = JSON.parse(phoenixChatHistory);
     } else {
-        geminiChatHistory = [];
+        phoenixChatHistory = [];
     }
-    const [messages, setMessages] = useState(geminiChatHistory ? transformToLocalMessagesStructure(geminiChatHistory) : []);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [messages, setMessages] = useState(phoenixChatHistory ? transformToLocalMessagesStructure(phoenixChatHistory) : []);
     const [userInput, setUserInput] = useState("");
     const [isGeminiTyping, setIsGeminiTyping] = useState(false);
     // REF to hold the end of messages for scrolling
@@ -59,8 +61,19 @@ const ChatApp = () => {
             role: role,
             parts: [{ text: text }],
         }];
-        localStorage.setItem("geminiChatHistory", JSON.stringify(chatSessionRef.current._history));
+        localStorage.setItem("phoenixChatHistory", JSON.stringify(chatSessionRef.current._history));
     };
+
+    const handleDeleteHistory = (e) => {
+        e.preventDefault();
+        setIsDeleteModalOpen(true);
+    }
+
+    const clearHistoryAndMessages = () => {
+        localStorage.removeItem("phoenixChatHistory");
+        setMessages([]);
+        chatSessionRef.current._history = [];
+    }
 
     useEffect(() => {
         scrollToBottom();
@@ -73,7 +86,7 @@ const ChatApp = () => {
                     topP: 1,
                     maxOutputTokens: 2048,
                 },
-                history: geminiChatHistory,
+                history: phoenixChatHistory,
             });
         }
     }, [messages]);
@@ -140,6 +153,7 @@ const ChatApp = () => {
     return (
         <div className='flex flex-col h-screen items-center bg-[#06051b]'>
             <Header />
+            <DeleteConfirmModal isDeleteModalOpen={isDeleteModalOpen} setIsDeleteModalOpen={setIsDeleteModalOpen} clearHistoryAndMessages={clearHistoryAndMessages} />
             <div className="flex-1 overflow-y-auto p-4 w-[100%] sm:w-[75%]" style={{
                 scrollbarWidth: 'none'
             }}>
@@ -205,8 +219,11 @@ const ChatApp = () => {
                         placeholder='Type a message...'
                         onChange={(e) => setUserInput(e.target.value)}
                     />
-                    <button className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-red-800 focus:outline-none">
+                    <button className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-800 focus:outline-none" title="Send Message">
                         <Send size={26} />
+                    </button>
+                    <button onClick={handleDeleteHistory} className={`ml-4 p-2 text-white rounded-full focus:outline-none ${phoenixChatHistory?.length ? 'bg-red-500 hover:bg-red-800' : 'bg-red-300'}`} title="Delete History" disabled={!phoenixChatHistory?.length}>
+                        <Trash2 size={26} />
                     </button>
                 </div>
             </form>
