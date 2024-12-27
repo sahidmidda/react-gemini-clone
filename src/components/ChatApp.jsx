@@ -212,6 +212,9 @@ const ChatApp = () => {
 
             <form onSubmit={handleSubmit} className='w-screen p-2 border border-x-0 border-b-0 border-t-blue-950 text-black'>
                 <div className="flex items-center justify-center">
+                    <button onClick={handleDeleteHistory} className={`mr-3 p-2 text-white rounded-full focus:outline-none ${phoenixChatHistory?.length ? 'bg-red-500 hover:bg-red-800' : 'bg-red-300'}`} title="Delete History" disabled={!phoenixChatHistory?.length}>
+                        <Trash2 size={26} />
+                    </button>
                     <input
                         type="text"
                         className="flex w-[100%] sm:w-[70%]  p-2 border rounded-lg rounded-r-none focus:outline-none"
@@ -221,9 +224,6 @@ const ChatApp = () => {
                     />
                     <button className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-800 focus:outline-none" title="Send Message">
                         <Send size={26} />
-                    </button>
-                    <button onClick={handleDeleteHistory} className={`ml-4 p-2 text-white rounded-full focus:outline-none ${phoenixChatHistory?.length ? 'bg-red-500 hover:bg-red-800' : 'bg-red-300'}`} title="Delete History" disabled={!phoenixChatHistory?.length}>
-                        <Trash2 size={26} />
                     </button>
                 </div>
             </form>
