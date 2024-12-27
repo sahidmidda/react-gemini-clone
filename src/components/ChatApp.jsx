@@ -14,10 +14,35 @@ const model = genAI.getGenerativeModel({
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const ChatApp = () => {
-    const [messages, setMessages] = useState([
+const transformToLocalMessagesStructure = (data) => {
+    const resultArr = data.map((item) => {
+        let role = item?.role;
+        let obj;
+        if (role === "user") {
+            obj = {
+                sender: "user",
+                text: item.parts[0].text
+            };
+        } else if (role === "model") {
+            obj = {
+                sender: "ai",
+                text: item.parts[0].text,
+                isGenerating: false,
+            };
+        }
+        return obj;
+    });
+    return resultArr;
+};
 
-    ]);
+const ChatApp = () => {
+    let geminiChatHistory = localStorage.getItem("geminiChatHistory");
+    if (geminiChatHistory) {
+        geminiChatHistory = JSON.parse(geminiChatHistory);
+    } else {
+        geminiChatHistory = [];
+    }
+    const [messages, setMessages] = useState(geminiChatHistory ? transformToLocalMessagesStructure(geminiChatHistory) : []);
     const [userInput, setUserInput] = useState("");
     const [isGeminiTyping, setIsGeminiTyping] = useState(false);
     // REF to hold the end of messages for scrolling
@@ -28,6 +53,14 @@ const ChatApp = () => {
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
+
+    const changeHistory = (role, text) => {
+        chatSessionRef.current._history = [...chatSessionRef.current._history, {
+            role: role,
+            parts: [{ text: text }],
+        }];
+        localStorage.setItem("geminiChatHistory", JSON.stringify(chatSessionRef.current._history));
+    };
 
     useEffect(() => {
         scrollToBottom();
@@ -40,7 +73,7 @@ const ChatApp = () => {
                     topP: 1,
                     maxOutputTokens: 2048,
                 },
-                history: [],
+                history: geminiChatHistory,
             });
         }
     }, [messages]);
@@ -67,8 +100,6 @@ const ChatApp = () => {
                 }
             ]);
             setIsGeminiTyping(false);
-
-
             for await (const chunk of result.stream) {
                 const chunkText = chunk.text();
                 fullResponse += chunkText;
@@ -90,6 +121,8 @@ const ChatApp = () => {
                     isGenerating: false
                 }
             ]);
+            changeHistory("user", userInput);
+            changeHistory("model", fullResponse);
         } catch (error) {
             console.log(error);
             setIsGeminiTyping(false);
