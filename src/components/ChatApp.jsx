@@ -221,8 +221,14 @@ const ChatApp = () => {
                         value={userInput}
                         placeholder='Type a message...'
                         onChange={(e) => setUserInput(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault(); // Prevent the default form submission
+                                handleSubmit(e); // Call the submit handler
+                            }
+                        }}
                     />
-                    <button className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-800 focus:outline-none" title="Send Message">
+                    <button type='submit' className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-800 focus:outline-none" title="Send Message">
                         <Send size={26} />
                     </button>
                 </div>
